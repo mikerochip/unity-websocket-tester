@@ -1,20 +1,10 @@
 {
   "dependencies": {
-    "com.endel.nativewebsocket": {
-      "version": "https://github.com/endel/NativeWebSocket.git#upm",
+    "com.mikerochip.websocket": {
+      "version": "file:../../../unity-websocket",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "c5101c07762251edc82caad9e8a39d51b1229c31"
-    },
-    "com.unity.collab-proxy": {
-      "version": "1.17.2",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.services.core": "1.0.1"
-      },
-      "url": "https://packages.unity.com"
+      "source": "local",
+      "dependencies": {}
     },
     "com.unity.editorcoroutines": {
       "version": "1.0.0",
@@ -69,29 +59,11 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.nuget.newtonsoft-json": {
-      "version": "3.0.2",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
     "com.unity.performance.profile-analyzer": {
       "version": "1.1.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.services.core": {
-      "version": "1.4.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.nuget.newtonsoft-json": "3.0.2",
-        "com.unity.modules.androidjni": "1.0.0"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {
