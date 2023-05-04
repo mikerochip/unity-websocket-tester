@@ -10,6 +10,7 @@ namespace WebSocketTester
 {
     public class Tester : MonoBehaviour
     {
+        public string _DefaultServer;
         public TMP_InputField _Server;
         public Button _ConnectButton;
         public Button _DisconnectButton;
@@ -23,6 +24,7 @@ namespace WebSocketTester
         {
             DontDestroyOnLoad(gameObject);
 
+            _Server.text = _DefaultServer;
             _ConnectButton.onClick.AddListener(() => _Connection.Connect(_Server.text));
             _DisconnectButton.onClick.AddListener(() => _Connection.Disconnect());
             _SendButton.onClick.AddListener(() => _Connection.AddOutgoingMessage(_OutgoingMessage.text));
