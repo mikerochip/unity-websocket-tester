@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using Mikerochip.WebSocket;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace WebSocketTester
 {
@@ -17,7 +14,9 @@ namespace WebSocketTester
         public TMP_Text _State;
         public TMP_InputField _OutgoingMessage;
         public Button _SendButton;
+        public Button _IncomingMessageButton;
         public TMP_Text _IncomingMessage;
+        public TMP_InputField _Error;
         public WebSocketConnection _Connection;
 
         private void Awake()
@@ -28,6 +27,9 @@ namespace WebSocketTester
             _ConnectButton.onClick.AddListener(() => _Connection.Connect(_Server.text));
             _DisconnectButton.onClick.AddListener(() => _Connection.Disconnect());
             _SendButton.onClick.AddListener(() => _Connection.AddOutgoingMessage(_OutgoingMessage.text));
+
+            UpdateUI();
+            _Connection.StateChanged += _ => UpdateUI();
         }
 
         private void Update()
@@ -36,6 +38,39 @@ namespace WebSocketTester
 
             while (_Connection.TryRemoveIncomingMessage(out string message))
                 _IncomingMessage.text = message;
+        }
+
+        private void UpdateUI()
+        {
+            switch (_Connection.State)
+            {
+                case WebSocketState.Invalid:
+                case WebSocketState.Closed:
+                case WebSocketState.Error:
+                    _ConnectButton.interactable = true;
+                    break;
+
+                default:
+                    _ConnectButton.interactable = false;
+                    break;
+            }
+            _DisconnectButton.interactable = !_ConnectButton.interactable;
+
+            _SendButton.interactable = _Connection.State == WebSocketState.Connected;
+            _IncomingMessageButton.interactable = _SendButton.interactable;
+            _OutgoingMessage.interactable = _SendButton.interactable;
+            if (!_SendButton.interactable)
+                _IncomingMessage.text = "Incoming Message...";
+
+            if (_Connection.ErrorMessage == null)
+            {
+                _Error.gameObject.SetActive(false);
+            }
+            else
+            {
+                _Error.gameObject.SetActive(true);
+                _Error.text = _Connection.ErrorMessage;
+            }
         }
     }
 }
