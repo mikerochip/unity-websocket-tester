@@ -29,7 +29,7 @@ namespace WebSocketTester
             _SendButton.onClick.AddListener(() => _Connection.AddOutgoingMessage(_OutgoingMessage.text));
 
             UpdateUI();
-            _Connection.StateChanged += _ => UpdateUI();
+            _Connection.StateChanged += (_, _, _) => UpdateUI();
         }
 
         private void Update()
