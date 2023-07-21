@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.mikerochip.websocket": {
+    "com.mikeschweitzer.websocket": {
       "version": "file:../../../unity-websocket",
       "depth": 0,
       "source": "local",

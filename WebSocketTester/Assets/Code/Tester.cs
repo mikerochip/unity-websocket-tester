@@ -1,4 +1,4 @@
-using Mikerochip.WebSocket;
+using MikeSchweitzer.WebSocket;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
