@@ -45,8 +45,7 @@ namespace WebSocketTester
             switch (_Connection.State)
             {
                 case WebSocketState.Invalid:
-                case WebSocketState.Closed:
-                case WebSocketState.Error:
+                case WebSocketState.Disconnected:
                     _ConnectButton.interactable = true;
                     break;
 
