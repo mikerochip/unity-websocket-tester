@@ -29,19 +29,30 @@ namespace WebSocketTester
             _SendButton.onClick.AddListener(() => _Connection.AddOutgoingMessage(_OutgoingMessage.text));
 
             UpdateUI();
-            _Connection.StateChanged += (_, _, _) => UpdateUI();
+            _Connection.StateChanged += OnStateChanged;
+            _Connection.MessageReceived += OnMessageReceived;
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-            _State.text = _Connection.State.ToString();
+            _Connection.StateChanged -= OnStateChanged;
+            _Connection.MessageReceived -= OnMessageReceived;
+        }
 
-            while (_Connection.TryRemoveIncomingMessage(out string message))
-                _IncomingMessage.text = message;
+        private void OnStateChanged(WebSocketConnection connection, WebSocketState oldState, WebSocketState newState)
+        {
+            UpdateUI();
+        }
+
+        private void OnMessageReceived(WebSocketConnection connection, WebSocketMessage message)
+        {
+            _IncomingMessage.text = message.String;
         }
 
         private void UpdateUI()
         {
+            _State.text = _Connection.State.ToString();
+
             switch (_Connection.State)
             {
                 case WebSocketState.Invalid:
