@@ -23,6 +23,11 @@ namespace WebSocketTester
         {
             DontDestroyOnLoad(gameObject);
 
+            _Connection.DesiredConfig = new WebSocketConfig
+            {
+                DisableSslValidation = true,
+            };
+
             _Server.text = _DefaultServer;
             _ConnectButton.onClick.AddListener(() => _Connection.Connect(_Server.text));
             _DisconnectButton.onClick.AddListener(() => _Connection.Disconnect());
