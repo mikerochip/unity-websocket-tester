@@ -25,7 +25,7 @@ namespace WebSocketTester
 
             _Connection.DesiredConfig = new WebSocketConfig
             {
-                DisableSslValidation = true,
+                CanDebugLog = Debug.isDebugBuild,
             };
 
             _Server.text = _DefaultServer;
