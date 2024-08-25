@@ -17,11 +17,16 @@ namespace WebSocketTester
         public Button _IncomingMessageButton;
         public TMP_Text _IncomingMessage;
         public TMP_InputField _Error;
+        public TMP_Text _Fps;
         public WebSocketConnection _Connection;
+
+        private float _fps = 60.0f;
 
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
+
+            Application.targetFrameRate = 60;
 
             _Connection.DesiredConfig = new WebSocketConfig
             {
@@ -36,6 +41,13 @@ namespace WebSocketTester
             UpdateUI();
             _Connection.StateChanged += OnStateChanged;
             _Connection.MessageReceived += OnMessageReceived;
+        }
+
+        private void Update()
+        {
+            var fps = 1.0f / Time.unscaledDeltaTime;
+            _fps = Mathf.Lerp(_fps, fps, 0.0005f);
+            _Fps.text = $"FPS: {_fps:N2}";
         }
 
         private void OnDestroy()
