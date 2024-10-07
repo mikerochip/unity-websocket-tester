@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MikeSchweitzer.WebSocket;
 using TMPro;
 using UnityEngine;
@@ -7,10 +8,14 @@ namespace WebSocketTester
 {
     public class Tester : MonoBehaviour
     {
+        #region Serialized Fields
         public string _DefaultServer;
         public TMP_InputField _Server;
         public Button _ConnectButton;
         public Button _DisconnectButton;
+        public Button _AddConnectionButton;
+        public Button _RemoveConnectionButton;
+        public TMP_Text _ConnectionCount;
         public TMP_Text _State;
         public TMP_InputField _OutgoingMessage;
         public Button _SendButton;
@@ -19,28 +24,31 @@ namespace WebSocketTester
         public TMP_InputField _Error;
         public TMP_Text _Fps;
         public WebSocketConnection _Connection;
+        #endregion
 
+        #region Private Fields
+        private List<WebSocketConnection> _connections = new();
         private float _fps = 60.0f;
+        #endregion
 
+        #region Unity Methods
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
 
             Application.targetFrameRate = 60;
 
-            _Connection.DesiredConfig = new WebSocketConfig
-            {
-                CanDebugLog = Debug.isDebugBuild,
-            };
+            InitConnection(_Connection);
+            _connections.Add(_Connection);
 
             _Server.text = _DefaultServer;
-            _ConnectButton.onClick.AddListener(() => _Connection.Connect(_Server.text));
-            _DisconnectButton.onClick.AddListener(() => _Connection.Disconnect());
-            _SendButton.onClick.AddListener(() => _Connection.AddOutgoingMessage(_OutgoingMessage.text));
+            _ConnectButton.onClick.AddListener(OnConnectButtonClicked);
+            _DisconnectButton.onClick.AddListener(OnDisconnectButtonClicked);
+            _AddConnectionButton.onClick.AddListener(OnAddConnectionButtonClicked);
+            _RemoveConnectionButton.onClick.AddListener(OnRemoveConnectionButtonClicked);
+            _SendButton.onClick.AddListener(OnSendButtonClicked);
 
             UpdateUI();
-            _Connection.StateChanged += OnStateChanged;
-            _Connection.MessageReceived += OnMessageReceived;
         }
 
         private void Update()
@@ -52,10 +60,12 @@ namespace WebSocketTester
 
         private void OnDestroy()
         {
-            _Connection.StateChanged -= OnStateChanged;
-            _Connection.MessageReceived -= OnMessageReceived;
+            foreach (var connection in _connections)
+                ShutdownConnection(connection);
         }
+        #endregion
 
+        #region WebSocketConnection Events
         private void OnStateChanged(WebSocketConnection connection, WebSocketState oldState, WebSocketState newState)
         {
             UpdateUI();
@@ -65,11 +75,14 @@ namespace WebSocketTester
         {
             _IncomingMessage.text = message.String;
         }
+        #endregion
 
+        #region UI Methods
         private void UpdateUI()
         {
             _State.text = _Connection.State.ToString();
 
+            _ConnectionCount.text = $"Conns: {_connections.Count}";
             switch (_Connection.State)
             {
                 case WebSocketState.Invalid:
@@ -99,5 +112,73 @@ namespace WebSocketTester
                 _Error.text = _Connection.ErrorMessage;
             }
         }
+
+        private void OnConnectButtonClicked()
+        {
+            foreach (var connection in _connections)
+                connection.Connect(_Server.text);
+        }
+
+        private void OnDisconnectButtonClicked()
+        {
+            foreach (var connection in _connections)
+                connection.Disconnect();
+        }
+
+        private void OnAddConnectionButtonClicked()
+        {
+            var connection = Instantiate(_Connection);
+            _connections.Add(connection);
+
+            InitConnection(connection);
+
+            if (_Connection.State is WebSocketState.Connected or WebSocketState.Connecting)
+                connection.Connect(_Server.text);
+
+            UpdateUI();
+        }
+
+        private void OnRemoveConnectionButtonClicked()
+        {
+            if (_connections.Count == 1)
+                return;
+
+            var connection = _connections[^1];
+            _connections.RemoveAt(_connections.Count - 1);
+
+            ShutdownConnection(connection);
+            Destroy(connection.gameObject);
+
+            UpdateUI();
+        }
+
+        private void OnSendButtonClicked()
+        {
+            foreach (var connection in _connections)
+            {
+                if (connection.State == WebSocketState.Connected)
+                    connection.AddOutgoingMessage(_OutgoingMessage.text);
+            }
+        }
+        #endregion
+
+        #region WebSocket Management
+        private void InitConnection(WebSocketConnection connection)
+        {
+            connection.DesiredConfig = new WebSocketConfig
+            {
+                CanDebugLog = Debug.isDebugBuild,
+            };
+            connection.StateChanged += OnStateChanged;
+            connection.MessageReceived += OnMessageReceived;
+        }
+
+        private void ShutdownConnection(WebSocketConnection connection)
+        {
+            connection.StateChanged -= OnStateChanged;
+            connection.MessageReceived -= OnMessageReceived;
+            connection.Disconnect();
+        }
+        #endregion
     }
 }
