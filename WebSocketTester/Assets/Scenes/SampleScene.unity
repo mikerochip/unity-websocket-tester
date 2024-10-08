@@ -990,7 +990,7 @@ GameObject:
   - component: {fileID: 360003852}
   - component: {fileID: 360003851}
   m_Layer: 5
-  m_Name: ConnectionsButton
+  m_Name: ConnectionCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1360,19 +1360,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _DefaultServer: wss://ws.postman-echo.com/raw
-  _Server: {fileID: 736937494}
+  _Server: wss://localhost:7026/
+  _ServerField: {fileID: 736937494}
   _ConnectButton: {fileID: 1361104372}
   _DisconnectButton: {fileID: 1574386136}
   _AddConnectionButton: {fileID: 596339466}
   _RemoveConnectionButton: {fileID: 269982808}
-  _ConnectionCount: {fileID: 840057676}
-  _State: {fileID: 134382667}
-  _OutgoingMessage: {fileID: 716687303}
+  _ConnectionCountText: {fileID: 840057676}
+  _StateText: {fileID: 134382667}
+  _OutgoingMessageField: {fileID: 716687303}
   _SendButton: {fileID: 1233234027}
   _IncomingMessageButton: {fileID: 1427146394}
-  _IncomingMessage: {fileID: 882789903}
-  _Error: {fileID: 2100376507}
-  _Fps: {fileID: 233075218}
+  _IncomingMessageText: {fileID: 882789903}
+  _ErrorField: {fileID: 2100376507}
+  _FpsText: {fileID: 233075218}
   _Connection: {fileID: 398633745}
 --- !u!4 &515315312
 Transform:
@@ -3125,7 +3126,7 @@ GameObject:
   - component: {fileID: 1406693482}
   - component: {fileID: 1406693481}
   m_Layer: 5
-  m_Name: StateButton
+  m_Name: State
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3246,7 +3247,7 @@ GameObject:
   - component: {fileID: 1427146395}
   - component: {fileID: 1427146394}
   m_Layer: 5
-  m_Name: IncomingButton
+  m_Name: IncomingMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3660,7 +3661,7 @@ GameObject:
   - component: {fileID: 1573294529}
   - component: {fileID: 1573294528}
   m_Layer: 5
-  m_Name: FpsButton
+  m_Name: Fps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
