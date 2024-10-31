@@ -73,17 +73,23 @@ namespace WebSocketTester
         #region WebSocketConnection Events
         private void OnStateChanged(WebSocketConnection connection, WebSocketState oldState, WebSocketState newState)
         {
+            Debug.Log($"[{connection.GetInstanceID()}] oldState={oldState} newState={newState}", connection);
+
             UpdateUI();
         }
 
         private void OnMessageReceived(WebSocketConnection connection, WebSocketMessage message)
         {
+            var type = message.Type == WebSocketDataType.Text ? "Txt" : "Bin";
+            Debug.Log($"[{connection.GetInstanceID()}] Recv: [{type}] {message.String}", connection);
+
             _IncomingMessageText.text = message.String;
         }
 
         private void OnErrorMessageReceived(WebSocketConnection connection, string errorMessage)
         {
-            Debug.LogError(errorMessage, connection);
+            Debug.LogError($"[{connection.GetInstanceID()}] Err: {errorMessage}", connection);
+
             UpdateUI();
         }
         #endregion
