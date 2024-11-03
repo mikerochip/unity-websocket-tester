@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MikeSchweitzer.WebSocket;
 using TMPro;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace WebSocketTester
         #endregion
 
         #region Private Fields
-        private List<WebSocketConnection> _connections = new();
+        private List<WebSocketConnection> _connections = new List<WebSocketConnection>();
         private float _fps = 60.0f;
         private TimeSpan _lastPingPongInterval = TimeSpan.Zero;
         #endregion
@@ -165,7 +166,7 @@ namespace WebSocketTester
 
             InitConnection(connection);
 
-            if (_Connection.State is WebSocketState.Connected or WebSocketState.Connecting)
+            if (_Connection.State == WebSocketState.Connected || _Connection.State == WebSocketState.Connecting)
                 connection.Connect(ServerUrl);
 
             UpdateUI();
@@ -176,7 +177,7 @@ namespace WebSocketTester
             if (_connections.Count == 1)
                 return;
 
-            var connection = _connections[^1];
+            var connection = _connections.Last();
             _connections.RemoveAt(_connections.Count - 1);
 
             ShutdownConnection(connection);
