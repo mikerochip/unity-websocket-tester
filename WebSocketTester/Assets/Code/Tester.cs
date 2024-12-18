@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MikeSchweitzer.WebSocket;
 using TMPro;
@@ -24,12 +25,14 @@ namespace WebSocketTester
         public TMP_Text _IncomingMessageText;
         public TMP_InputField _ErrorField;
         public TMP_Text _FpsText;
+        public TMP_Text _RttText;
         public WebSocketConnection _Connection;
         #endregion
 
         #region Private Fields
         private List<WebSocketConnection> _connections = new();
         private float _fps = 60.0f;
+        private TimeSpan _lastPingPongInterval = TimeSpan.Zero;
         #endregion
 
         #region Private Properties
@@ -61,6 +64,8 @@ namespace WebSocketTester
             var fps = 1.0f / Time.unscaledDeltaTime;
             _fps = Mathf.Lerp(_fps, fps, 0.0005f);
             _FpsText.text = $"FPS: {_fps:N2}";
+
+            _RttText.text = $"RTT: {_Connection.LastPingPongInterval.TotalSeconds:N2}s";
         }
 
         private void OnDestroy()
@@ -91,6 +96,16 @@ namespace WebSocketTester
             Debug.LogError($"[{connection.GetInstanceID()}] Err: {errorMessage}", connection);
 
             UpdateUI();
+        }
+
+        private void OnPingSent(WebSocketConnection connection, DateTime timestamp)
+        {
+            Debug.Log($"[{connection.GetInstanceID()}] Ping: {timestamp:HH:mm:ss.ffff}", connection);
+        }
+
+        private void OnPongReceived(WebSocketConnection connection, DateTime timestamp)
+        {
+            Debug.Log($"[{connection.GetInstanceID()}] Pong: {timestamp:HH:mm:ss.ffff}", connection);
         }
         #endregion
 
@@ -185,10 +200,13 @@ namespace WebSocketTester
             connection.DesiredConfig = new WebSocketConfig
             {
                 CanDebugLog = Debug.isDebugBuild,
+                PingInterval = TimeSpan.FromMilliseconds(3000),
             };
             connection.StateChanged += OnStateChanged;
             connection.MessageReceived += OnMessageReceived;
             connection.ErrorMessageReceived += OnErrorMessageReceived;
+            connection.PingSent += OnPingSent;
+            connection.PongReceived += OnPongReceived;
         }
 
         private void ShutdownConnection(WebSocketConnection connection)
@@ -196,6 +214,8 @@ namespace WebSocketTester
             connection.StateChanged -= OnStateChanged;
             connection.MessageReceived -= OnMessageReceived;
             connection.ErrorMessageReceived -= OnErrorMessageReceived;
+            connection.PingSent -= OnPingSent;
+            connection.PongReceived -= OnPongReceived;
             connection.Disconnect();
         }
         #endregion
