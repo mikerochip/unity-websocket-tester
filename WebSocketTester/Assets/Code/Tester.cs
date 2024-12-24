@@ -106,6 +106,7 @@ namespace WebSocketTester
         private void OnPongReceived(WebSocketConnection connection, DateTime timestamp)
         {
             Debug.Log($"[{connection.GetInstanceID()}] Pong: {timestamp:HH:mm:ss.ffff}", connection);
+            Debug.Log($"[{connection.GetInstanceID()}] Ping-Pong RTT: {connection.LastPingPongInterval:ss\\.ffff}", connection);
         }
         #endregion
 
@@ -199,8 +200,9 @@ namespace WebSocketTester
         {
             connection.DesiredConfig = new WebSocketConfig
             {
+                PingInterval = TimeSpan.FromSeconds(3.0),
+                ShouldPingWaitForPong = true,
                 CanDebugLog = Debug.isDebugBuild,
-                PingInterval = TimeSpan.FromMilliseconds(3000),
             };
             connection.StateChanged += OnStateChanged;
             connection.MessageReceived += OnMessageReceived;
