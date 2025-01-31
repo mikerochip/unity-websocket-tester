@@ -2,6 +2,8 @@
 
 This repo contains a Unity project that includes my [`Unity WebSocket client package`](https://github.com/mikerochip/unity-websocket) as a local package.
 
+Setting things up this way makes it much faster to iterate on the package than pointing it at a remote repo, while still keeping the package repo in a self-publishable form.
+
 # Setup
 
 1. Clone the [package repo](https://github.com/mikerochip/unity-websocket)
