@@ -11,7 +11,6 @@ namespace WebSocketTester
     {
         #region Serialized Fields
         public string _DefaultServer;
-        public string _Server;
         public TMP_InputField _ServerField;
         public Button _ConnectButton;
         public Button _DisconnectButton;
@@ -49,7 +48,8 @@ namespace WebSocketTester
             InitConnection(_Connection);
             _connections.Add(_Connection);
 
-            _ServerField.text = string.IsNullOrEmpty(_Server) ? _DefaultServer : _Server;
+            _ServerField.text = string.IsNullOrEmpty(Settings.ServerUrl) ? _DefaultServer : Settings.ServerUrl;
+            _ServerField.onEndEdit.AddListener(OnServerFieldEndEdit);
             _ConnectButton.onClick.AddListener(OnConnectButtonClicked);
             _DisconnectButton.onClick.AddListener(OnDisconnectButtonClicked);
             _AddConnectionButton.onClick.AddListener(OnAddConnectionButtonClicked);
@@ -144,6 +144,11 @@ namespace WebSocketTester
                 _ErrorField.gameObject.SetActive(true);
                 _ErrorField.text = _Connection.ErrorMessage;
             }
+        }
+
+        private void OnServerFieldEndEdit(string text)
+        {
+            Settings.ServerUrl = text;
         }
 
         private void OnConnectButtonClicked()
