@@ -1,10 +1,11 @@
-# Unity Test Project for WebSocket Client Package
+# Client Test Project for Unity WebSocket Package
 
-This repo contains a sample project to test my [`Unity WebSocket client package`](https://github.com/mikerochip/unity-websocket)
+This repo contains a Unity project that includes my [`Unity WebSocket client package`](https://github.com/mikerochip/unity-websocket) as a local package.
 
 # Setup
 
-1. Clone this repo
+1. Clone the [package repo](https://github.com/mikerochip/unity-websocket)
+1. Clone this repo **at the same folder level** as the package repo
 1. Download the Unity Hub https://unity.com/download
 1. Install the hub
 1. Run the hub
