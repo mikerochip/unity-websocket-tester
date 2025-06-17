@@ -22,6 +22,7 @@ namespace WebSocketTester
         public Button _SendButton;
         public Button _IncomingMessageButton;
         public TMP_Text _IncomingMessageText;
+        public TMP_InputField _ClosedField;
         public TMP_InputField _ErrorField;
         public TMP_Text _FpsText;
         public TMP_Text _RttText;
@@ -91,6 +92,13 @@ namespace WebSocketTester
             _IncomingMessageText.text = message.String;
         }
 
+        private void OnClosed(WebSocketConnection connection, WebSocketCloseCode closeCode, string reason)
+        {
+            Debug.Log($"[{connection.GetInstanceID()}] Closed: code={closeCode} reason=\"{reason}\"", connection);
+
+            UpdateUI();
+        }
+
         private void OnErrorMessageReceived(WebSocketConnection connection, string errorMessage)
         {
             Debug.LogError($"[{connection.GetInstanceID()}] Err: {errorMessage}", connection);
@@ -135,6 +143,16 @@ namespace WebSocketTester
             if (!_SendButton.interactable)
                 _IncomingMessageText.text = "Incoming Message...";
 
+            if (_Connection.CloseCode == 0 && _Connection.CloseReason == null)
+            {
+                _ClosedField.gameObject.SetActive(false);
+            }
+            else
+            {
+                _ClosedField.gameObject.SetActive(true);
+                _ClosedField.text = $"Closed: {_Connection.CloseCode} ({_Connection.CloseReason})";
+            }
+
             if (_Connection.ErrorMessage == null)
             {
                 _ErrorField.gameObject.SetActive(false);
@@ -142,7 +160,7 @@ namespace WebSocketTester
             else
             {
                 _ErrorField.gameObject.SetActive(true);
-                _ErrorField.text = _Connection.ErrorMessage;
+                _ErrorField.text = $"Err: {_Connection.ErrorMessage}";
             }
         }
 
@@ -211,6 +229,7 @@ namespace WebSocketTester
             };
             connection.StateChanged += OnStateChanged;
             connection.MessageReceived += OnMessageReceived;
+            connection.Closed += OnClosed;
             connection.ErrorMessageReceived += OnErrorMessageReceived;
             connection.PingSent += OnPingSent;
             connection.PongReceived += OnPongReceived;
@@ -220,6 +239,7 @@ namespace WebSocketTester
         {
             connection.StateChanged -= OnStateChanged;
             connection.MessageReceived -= OnMessageReceived;
+            connection.Closed -= OnClosed;
             connection.ErrorMessageReceived -= OnErrorMessageReceived;
             connection.PingSent -= OnPingSent;
             connection.PongReceived -= OnPongReceived;
