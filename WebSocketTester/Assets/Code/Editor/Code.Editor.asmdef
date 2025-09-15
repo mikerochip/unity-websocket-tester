@@ -1,7 +1,7 @@
 {
     "name": "Code.Editor",
     "rootNamespace": "WebSocketTester",
-    "references": [],
+    "references": ["GUID:eb5b27a9e0de74e76858c25a0a21949f"],
     "includePlatforms": [
         "Editor"
     ],

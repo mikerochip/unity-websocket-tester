@@ -1647,6 +1647,8 @@ MonoBehaviour:
   _ErrorField: {fileID: 2100376507}
   _FpsText: {fileID: 233075218}
   _RttText: {fileID: 427333575}
+  _SelfSignedCert: {fileID: 0}
+  _SelfSignedCertPassword: {fileID: 0}
   _Connection: {fileID: 398633745}
 --- !u!4 &515315312
 Transform:

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using MikeSchweitzer.WebSocket;
 using TMPro;
 using UnityEngine;
@@ -26,7 +28,23 @@ namespace WebSocketTester
         public TMP_InputField _ErrorField;
         public TMP_Text _FpsText;
         public TMP_Text _RttText;
+        public TextAsset _SelfSignedCert;
+        public TextAsset _SelfSignedCertPassword;
         public WebSocketConnection _Connection;
+        #endregion
+
+        #region Cert Support
+        private class SelfSignedCertTrustPolicy : ICertificatePolicy
+        {
+            public bool CheckValidationResult(
+                ServicePoint servicePoint,
+                X509Certificate certificate,
+                WebRequest request,
+                int certificateProblem)
+            {
+                return true;
+            }
+        }
         #endregion
 
         #region Private Fields
@@ -36,7 +54,16 @@ namespace WebSocketTester
         #endregion
 
         #region Private Properties
-        private string ServerUrl => _ServerField.text;
+        private WebSocketConfig Config => new WebSocketConfig
+        {
+            Url = _ServerField.text,
+            DotNetSelfSignedCert = _SelfSignedCert == null
+                ? null
+                : _SelfSignedCert.bytes,
+            DotNetSelfSignedCertPassword = _SelfSignedCertPassword == null
+                ? null
+                : _SelfSignedCertPassword.text.ToCharArray(),
+        };
         #endregion
 
         #region Unity Methods
@@ -45,6 +72,10 @@ namespace WebSocketTester
             DontDestroyOnLoad(gameObject);
 
             Application.targetFrameRate = 60;
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            ServicePointManager.CertificatePolicy = new SelfSignedCertTrustPolicy();
+#pragma warning restore CS0618 // Type or member is obsolete
 
             InitConnection(_Connection);
             _connections.Add(_Connection);
@@ -172,7 +203,10 @@ namespace WebSocketTester
         private void OnConnectButtonClicked()
         {
             foreach (var connection in _connections)
-                connection.Connect(ServerUrl);
+            {
+                connection.DesiredConfig = Config;
+                connection.Connect();
+            }
         }
 
         private void OnDisconnectButtonClicked()
@@ -189,7 +223,10 @@ namespace WebSocketTester
             InitConnection(connection);
 
             if (_Connection.State is WebSocketState.Connected or WebSocketState.Connecting)
-                connection.Connect(ServerUrl);
+            {
+                connection.DesiredConfig = Config;
+                connection.Connect();
+            }
 
             UpdateUI();
         }

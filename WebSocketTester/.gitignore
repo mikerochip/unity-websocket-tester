@@ -13,35 +13,25 @@ obj/
 Logs/
 UserSettings/
 
-# Addressables data generated when building content
-ServerData/
-Assets/StreamingAssets/aa*
-Assets/AddressableAssetsData/link.xml*
-# Addressables generates platform folders directly underneath AddressableAssetsData.
-# All they contain is addressables_content_state.bin but we have to ignore each platform
-# because of meta files.
-Assets/AddressableAssetsData/Unknown*
-Assets/AddressableAssetsData/Windows*
-Assets/AddressableAssetsData/OSX*
-Assets/AddressableAssetsData/Linux*
-Assets/AddressableAssetsData/PS4*
-Assets/AddressableAssetsData/Switch*
-Assets/AddressableAssetsData/XboxOne*
-Assets/AddressableAssetsData/WebGL*
-Assets/AddressableAssetsData/iOS*
-Assets/AddressableAssetsData/Android*
-Assets/AddressableAssetsData/WindowsUniversal*
-
 # Plugins
-Assets/PlayMaker/Editor/Resources/EditorStartupPrefs.asset*
+Assets/Certs*
+
+# Addressables default ignores, before user customizations
+/ServerData
+/[Aa]ssets/StreamingAssets/aa*
+/[Aa]ssets/AddressableAssetsData/link.xml*
+/[Aa]ssets/Addressables_Temp*
+# By default, Addressables content builds will generate addressables_content_state.bin
+# files in platform-specific subfolders, for example:
+# /Assets/AddressableAssetsData/OSX/addressables_content_state.bin
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+Assets/AddressableAssetsData/WindowsUniversal*
 
 # Visual Studio
 .vs/
-.vscode/
 .vsconfig/
 
 # JetBrains Rider
-.idea/
 Assets/Plugins/Editor/JetBrains*
 *.DotSettings.user
 
